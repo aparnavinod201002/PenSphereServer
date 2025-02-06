@@ -44,3 +44,36 @@ exports.getComments=async(req,res)=>{
         
     }
 }
+
+
+
+
+exports.getMostCommentedPostId = async (req, res) => {
+    console.log("Fetching the most commented post ID...");
+    
+    try {
+        const mostCommentedPost = await comments.aggregate([
+            {
+                $group: {
+                    _id: "$postId", 
+                    commentCount: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { commentCount: -1 } 
+            },
+            {
+                $limit: 1 
+            }
+        ]);
+
+        if (mostCommentedPost.length > 0) {
+            res.status(200).json({ postId: mostCommentedPost[0]._id, commentCount: mostCommentedPost[0].commentCount });
+        } else {
+            res.status(404).json({ message: "No comments found." });
+        }
+    } catch (err) {
+        console.error("Error fetching most commented post:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};

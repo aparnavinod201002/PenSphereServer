@@ -16,6 +16,8 @@ router.get('/comments/:postId',commentController.getComments)
 router.get('/user',jwtMiddleware,userController.getUser)
 router.delete('/posts/remove/:id',jwtMiddleware,postController.deletePost)
 router.put('/posts/edit/:id',jwtMiddleware,multerConfig.single('postImage'),postController.editPost)
+router.get('/postId',jwtMiddleware,commentController.getMostCommentedPostId)
+router.get('/MostcommentsPost/:id',jwtMiddleware,postController.getMostCommentedPost)
 
 
 module.exports = router

@@ -90,3 +90,32 @@ exports.editPost= async(req,res)=>{
         res.status(401).json(err)
     }
 }
+
+
+exports.getMostCommentedPost = async (req, res) => {
+    console.log("inside most post");
+
+    try {
+        // Ensure token is included in request headers
+        const token = req.headers.authorization;
+        if (!token) {
+            return res.status(401).json({ message: "Unauthorized: No token provided" });
+        }
+
+        // Extract post ID correctly
+        const id = req.params.id;
+        console.log("Post ID:", id);
+
+        // Fetch the most commented post by ID
+        const mostCommentedPost = await post.findById(id);
+        if (!mostCommentedPost) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        console.log("Most Commented Post:", mostCommentedPost);
+        res.status(200).json(mostCommentedPost);
+    } catch (err) {
+        console.error("Error fetching most commented post:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
